@@ -217,11 +217,23 @@ backButton.addEventListener('click', (e) => {
   e.preventDefault();
 });
 
-exitButton.addEventListener('click', (e) => {
+const exitMenu = () => {
   postEvent('exit-menu', { exit: true });
-
   state = 'select-menu';
   onStateChange();
+};
+
+const escPressed = e => {
+  if(e.keyCode === 8){
+    console.log('pressed')
+    exitMenu();
+  };
+}
+
+document.onkeydown = escPressed;
+
+exitButton.addEventListener('click', (e) => {
+  exitMenu();
   e.preventDefault();
 });
 
