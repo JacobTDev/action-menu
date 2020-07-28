@@ -1,13 +1,14 @@
-local show = false
+local VehicleSystem = exports["vehicle-system"]
+local open = false
 
 AddEventHandler("onClientResourceStart", function() 
-  displayActionMenu(false)
+  ToggleMenu(false)
 end)
 
 Citizen.CreateThread(function() 
   while true do
     Citizen.Wait(0)
-    if show then
+    if open then
       DisableControlAction(1, 140, true) -- Attack
       DisableControlAction(1, 141, true) -- Attack
       DisableControlAction(1, 142, true) -- Attack
@@ -25,42 +26,60 @@ end)
 Citizen.CreateThread(function() 
   while true do
     Citizen.Wait(0)    
-    SetNuiFocusKeepInput(true)
+    SetNuiFocusKeepInput(open)
 
-    if IsControlJustPressed(1, 166) and not show then
-      show = true
-      displayActionMenu(show)
+    if IsControlJustPressed(1, 166) and not open then
+      ToggleMenu(true)
     end
   end
 end)
 
-RegisterNUICallback('toggle-trunk', function(data, cb) 
-  local playerPed = GetPlayerPed(-1)
-  local vehicle = nil
+function ToggleMenu(_open) 
+  open = _open
+  SetNuiFocus(open, open)
+  SendNUIMessage({
+    type = "action-menu",
+    on = open
+  })
+end
 
-  if IsPedInAnyVehicle(playerPed, true) then
-    vehicle = GetVehiclePedIsIn(playerPed, false)
-    if GetVehicleDoorAngleRatio(vehicle, 5) ~= 0 then
-      SetVehicleDoorShut(vehicle, 5, false)
-    else
-      SetVehicleDoorOpen(vehicle, 5, false, false)
-    end
-  end
-
+-- NUI Callbacks
+RegisterNUICallback('toggle-engine', function(data, cb) 
+  VehicleSystem:ToggleEngine()
   cb("success")
 end)
 
-RegisterNUICallback('exit-menu', function(data, cb)
-  show = false
-  displayActionMenu(false)
-
-  cb("Exited from menu.")
+RegisterNUICallback('toggle-hood', function(data, cb) 
+  VehicleSystem:ToggleHood()
+  cb("success")
 end)
 
-function displayActionMenu(show) 
-  SetNuiFocus(show, show)
-  SendNUIMessage({
-    type = "action-menu",
-    on = show
-  })
-end
+RegisterNUICallback('toggle-trunk', function(data, cb) 
+  VehicleSystem:ToggleTrunk()
+  cb("success")
+end)
+
+RegisterNUICallback('toggle-fldoor', function(data, cb) 
+  VehicleSystem:ToggleDriverDoor()
+  cb("success")
+end)
+
+RegisterNUICallback('toggle-frdoor', function(data, cb) 
+  VehicleSystem:TogglePassengerDoor()
+  cb('success')
+end)
+
+RegisterNUICallback('toggle-bldoor', function(data, cb) 
+  VehicleSystem:ToggleBackLeftDoor()
+  cb("success")
+end)
+
+RegisterNUICallback('toggle-brdoor', function(data, cb) 
+  VehicleSystem:ToggleBackRightDoor()
+  cb('success')
+end)
+
+RegisterNUICallback('exit-menu', function(data, cb)
+  ToggleMenu(false)
+  cb("exited from menu")
+end)
