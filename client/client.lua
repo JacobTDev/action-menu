@@ -1,4 +1,5 @@
 local VehicleSystem = exports["vehicle-system"]
+local PoliceSystem = exports["police-system"]
 local open = false
 
 AddEventHandler("onClientResourceStart", function() 
@@ -39,6 +40,7 @@ function ToggleMenu(_open)
   SetNuiFocus(open, open)
   SendNUIMessage({
     type = "action-menu",
+    inService = PoliceSystem:IsPlayerInService(),
     on = open
   })
 end

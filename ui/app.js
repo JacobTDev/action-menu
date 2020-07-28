@@ -1,4 +1,5 @@
 let state = 'select-menu';
+let inService = false;
 
 const backButton = document.getElementById('back-btn');
 const exitButton = document.getElementById('exit-btn');
@@ -66,7 +67,6 @@ const onStateChange = () => {
   }
 
   setBackBtn();
-  console.log(state);
 };
 
 const clearOptions = () => {
@@ -76,17 +76,23 @@ const clearOptions = () => {
 const setStartMenu = () => {
   clearOptions();
 
-  const html = `
+  let html = `
     <div class="btn" id="general-btn">
       <h3>General</h3>
     </div>
     <div class="btn" id="vehicle-btn">
       <h3>Vehicle</h3>
     </div>
-    <div class="btn" id="leo-btn">
-      <h3>Law Enforcement</h3>
-    </div>
+
   `;
+
+  if (inService) {
+    html += `
+      <div class="btn" id="leo-btn">
+        <h3>Law Enforcement</h3>
+      </div>
+    `;
+  }
 
   optionsContainer.innerHTML = html;
 };
@@ -225,7 +231,6 @@ const exitMenu = () => {
 
 const escPressed = e => {
   if(e.keyCode === 8){
-    console.log('pressed')
     exitMenu();
   };
 }
@@ -239,8 +244,22 @@ exitButton.addEventListener('click', (e) => {
 
 window.addEventListener('message', (e) => {
   if (e.data.type === 'action-menu' && e.data.on) {
+    if (e.data.inService) {
+      inService = true;
+    } else {
+      inService = false;
+    }
+
     document.querySelector('.menu-container').style.display = 'flex';
   } else if (e.data.type === 'action-menu' && !e.data.on) {
     document.querySelector('.menu-container').style.display = 'none';
   }
+
+  state = 'select-menu';
+  onStateChange();
+});
+
+window.addEventListener('load', e => {
+  state = 'select-menu';
+  onStateChange();
 });
