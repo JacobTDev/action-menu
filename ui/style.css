@@ -18,7 +18,7 @@ body {
 }
 
 .menu-container {
-  display: none;
+  display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
@@ -38,7 +38,8 @@ body {
 } 
 
 .menu-container .options-container {
-  max-height: 10%;
+  max-height: 270px;
+  overflow: auto;
   width: 100%;
 }
 
@@ -46,7 +47,7 @@ body {
   margin: 20px 0;
   padding-top: 10px;
   padding-bottom: 10px;
-  border: 3px #8b0f0f solid;
+  border: 2px #8b0f0f solid;
   border-radius: 8px;
   text-align: center;
   cursor: pointer !important;
@@ -60,4 +61,19 @@ body {
 .special-btn-container {
   margin-top: 50px;
   width: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 4px !important;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #131414d7;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  width: 5px;
+  background: #ff0019;
 }
